@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PSX AI Analyst</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+
+<body>
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="logo">PSX<span class="logo-ai">·AI</span></span>
+      <span class="tagline">Pakistan Stock Intelligence</span>
+    </div>
+    <div class="topbar-center">
+      <div class="macro-pill" id="kse-pill">
+        <span class="macro-label">KSE-100</span>
+        <span class="macro-value" id="kse-value">—</span>
+        <span class="macro-change" id="kse-change">—</span>
+      </div>
+      <div class="macro-pill" id="pkr-pill">
+        <span class="macro-label">USD/PKR</span>
+        <span class="macro-value" id="pkr-value">—</span>
+        <span class="macro-change" id="pkr-change">—</span>
+      </div>
+      <div class="macro-pill" id="sentiment-pill">
+        <span class="macro-label">MARKET</span>
+        <span class="macro-value" id="market-sentiment">—</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <nav class="tab-nav">
+        <button class="tab-btn active" data-tab="market">Market</button>
+        <button class="tab-btn" data-tab="portfolio">Portfolio</button>
+        <button class="tab-btn" data-tab="dividends">Dividends</button>
+      </nav>
+      <span class="live-dot"></span>
+      <span class="update-time" id="update-time">Loading...</span>
+    </div>
+  </header>
+
+  <!-- TAB: MARKET -->
+  <div id="tab-market" class="tab-view active">
+    <div class="layout">
+
+      <!-- LEFT: Stocks -->
+      <section class="panel panel-stocks">
+        <div class="panel-header">
+          <h2>STOCKS</h2>
+          <div class="filter-row">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="shariah">Halal ✓</button>
+            <button class="filter-btn" data-filter="gainers">Gainers</button>
+            <button class="filter-btn" data-filter="losers">Losers</button>
+          </div>
+        </div>
+        <div class="stock-table-wrap">
+          <table class="stock-table">
+            <thead>
+              <tr>
+                <th>SYMBOL</th>
+                <th>PRICE</th>
+                <th>CHG%</th>
+                <th>SIGNAL</th>
+                <th>H/C</th>
+              </tr>
+            </thead>
+            <tbody id="stock-tbody">
+              <tr>
+                <td colspan="5" class="loading-row">Fetching live prices...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- CENTER: AI Overview + News -->
+      <section class="panel panel-center">
+        <div class="market-overview" id="market-overview">
+          <div class="mo-header">
+            <span class="mo-label">AI MARKET OVERVIEW</span>
+            <span class="mo-score" id="mo-score">—</span>
+          </div>
+          <p class="mo-summary" id="mo-summary">Analyzing markets...</p>
+          <div class="mo-tags" id="mo-tags"></div>
+          <div class="mo-row">
+            <div class="mo-col"><span class="mo-col-label">HOT SECTORS</span>
+              <div id="mo-hot"></div>
+            </div>
+            <div class="mo-col"><span class="mo-col-label">WEAK SECTORS</span>
+              <div id="mo-weak"></div>
+            </div>
+          </div>
+          <div class="mo-advice" id="mo-advice"></div>
+        </div>
+        <div class="sector-row" id="sector-row"></div>
+        <div class="news-header">
+          <h2>LIVE NEWS</h2>
+          <div class="news-filters">
+            <button class="news-btn active" data-news="all">All</button>
+            <button class="news-btn" data-news="positive">Bullish</button>
+            <button class="news-btn" data-news="negative">Bearish</button>
+          </div>
+        </div>
+        <div class="news-feed" id="news-feed">
+          <div class="loading-row">Fetching news...</div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- TAB: PORTFOLIO -->
+  <div id="tab-portfolio" class="tab-view">
+    <div class="portfolio-layout">
+      <div class="port-summary">
+        <div class="port-stat"><span class="port-stat-label">INVESTED</span><span class="port-stat-val"
+            id="port-invested">—</span></div>
+        <div class="port-stat"><span class="port-stat-label">CURRENT VALUE</span><span class="port-stat-val"
+            id="port-current">—</span></div>
+        <div class="port-stat"><span class="port-stat-label">TOTAL P&amp;L</span><span class="port-stat-val"
+            id="port-pnl">—</span></div>
+        <div class="port-stat"><span class="port-stat-label">RETURN %</span><span class="port-stat-val"
+            id="port-pnl-pct">—</span></div>
+        <div class="port-stat"><span class="port-stat-label">HOLDINGS</span><span class="port-stat-val"
+            id="port-count">—</span></div>
+        <button class="btn-ai-advice" onclick="fetchPortfolioAdvice()">🤖 AI Advice</button>
+      </div>
+      <div class="port-body">
+        <div class="port-left">
+          <div class="port-section-header">MY HOLDINGS</div>
+          <div id="port-holdings" class="port-holdings">
+            <p class="loading-row">No holdings yet.</p>
+          </div>
+          <div class="add-holding-form">
+            <div class="form-title">+ ADD / UPDATE HOLDING</div>
+            <div class="form-row">
+              <input type="text" id="f-symbol" placeholder="Symbol e.g. OGDC" class="form-input" maxlength="6" />
+              <input type="number" id="f-shares" placeholder="Shares" class="form-input" min="1" />
+              <input type="number" id="f-buyprice" placeholder="Buy Price (PKR)" class="form-input" step="0.01" />
+              <input type="date" id="f-buydate" class="form-input" />
+              <button class="form-btn" onclick="submitHolding()">ADD</button>
+            </div>
+            <div class="form-error" id="form-error"></div>
+          </div>
+        </div>
+        <div class="port-right">
+          <div class="port-section-header">AI PORTFOLIO ADVICE</div>
+          <div id="port-advice-panel" class="port-advice-panel">
+            <p class="loading-row" style="padding:40px 0">Click "AI Advice" to analyze your portfolio</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: DIVIDENDS -->
+  <div id="tab-dividends" class="tab-view">
+    <div class="div-layout">
+      <div class="div-header-row">
+        <h2 class="div-title">DIVIDEND ANNOUNCEMENTS</h2>
+        <p class="div-subtitle">Sources: sarmaaya.pk · scstrade.com · Google News — refreshed every 5 min</p>
+      </div>
+      <div class="div-grid" id="div-grid">
+        <p class="loading-row">Loading...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STOCK DETAIL MODAL -->
+  <div class="modal-overlay" id="modal-overlay" onclick="closeModal()"></div>
+  <div class="modal" id="stock-modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-content" id="modal-content"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
