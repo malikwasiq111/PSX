@@ -1,0 +1,73 @@
+{
+  "signals": [
+    {
+      "id": 1,
+      "symbol": "MARI",
+      "signal": "STRONG BUY",
+      "confidence": 78,
+      "price_at_signal": 664.94,
+      "target_price": 725.0,
+      "stop_loss": 635.0,
+      "reasoning": "Mari Petroleum exhibits strong bullish momentum from a recent MACD cross, with price challenging immediate resistance on above-average volume. This technical setup, alongside a neutral RSI, signals a ",
+      "timestamp": "2026-04-16T17:12:49.477395",
+      "outcome": "open",
+      "current_price": 664.94,
+      "return_pct": 0.0,
+      "hit_target": false,
+      "hit_stop": false
+    },
+    {
+      "id": 2,
+      "symbol": "ATRL",
+      "signal": "BUY",
+      "confidence": 50,
+      "price_at_signal": 867.75,
+      "target_price": 937.17,
+      "stop_loss": 824.36,
+      "reasoning": "AI analysis temporarily unavailable. Using technical signal as fallback.",
+      "timestamp": "2026-04-16T17:56:36.889960",
+      "outcome": "open",
+      "current_price": 867.75,
+      "return_pct": 0.0,
+      "hit_target": false,
+      "hit_stop": false
+    }
+  ],
+  "stats": {
+    "total_signals": 2,
+    "closed_signals": 0,
+    "open_signals": 2,
+    "wins": 0,
+    "losses": 0,
+    "win_rate": 0,
+    "avg_return": 0.0,
+    "by_signal_type": {
+      "STRONG BUY": {
+        "count": 1,
+        "avg_return": 0.0,
+        "win_rate": 0.0
+      },
+      "BUY": {
+        "count": 1,
+        "avg_return": 0.0,
+        "win_rate": 0.0
+      },
+      "HOLD": {
+        "count": 0,
+        "avg_return": 0,
+        "win_rate": 0
+      },
+      "SELL": {
+        "count": 0,
+        "avg_return": 0,
+        "win_rate": 0
+      },
+      "STRONG SELL": {
+        "count": 0,
+        "avg_return": 0,
+        "win_rate": 0
+      }
+    },
+    "last_updated": "2026-04-16T19:19:05.105828"
+  }
+}

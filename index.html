@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PSX AI Analyst — Pakistan Stock Exchange Intelligence</title>
+  <meta name="description" content="AI-powered Pakistan Stock Exchange dashboard with real-time prices, buy/sell signals, technical analysis, portfolio tracking, and corporate announcements." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+</head>
+
+<body>
+
+  <!-- ═══ TOP NAVIGATION BAR ═══ -->
+  <header class="topbar" id="topbar">
+    <div class="topbar-left">
+      <div class="logo" onclick="navigateTo('market')">
+        <span class="logo-icon">📊</span>
+        <span class="logo-text">PSX</span><span class="logo-ai">·AI</span>
+      </div>
+    </div>
+
+    <!-- KSE-100 & KMI-30 Hero -->
+    <div class="topbar-kse" id="topbar-kse">
+      <div class="kse-hero" onclick="navigateTo('market'); setStockFilter('kse100')" style="cursor:pointer" title="Click to view KSE-100 stocks">
+        <span class="kse-label">KSE-100</span>
+        <span class="kse-value" id="kse-value">—</span>
+        <span class="kse-change" id="kse-change">—</span>
+      </div>
+      <div class="kse-hero kmi30-hero" onclick="navigateTo('market'); setStockFilter('kmi30')" style="cursor:pointer" title="Click to view KMI-30 stocks">
+        <span class="kse-label">KMI-30</span>
+        <span class="kse-value" id="kmi30-value">—</span>
+        <span class="kse-change" id="kmi30-change">—</span>
+      </div>
+      <div class="macro-pill" id="pkr-pill">
+        <span class="macro-label">USD/PKR</span>
+        <span class="macro-val" id="pkr-value">—</span>
+        <span class="macro-chg" id="pkr-change">—</span>
+      </div>
+      <div class="macro-pill" id="sentiment-pill">
+        <span class="macro-label">MARKET</span>
+        <span class="macro-val" id="market-sentiment">—</span>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <!-- Search -->
+      <div class="search-wrap" id="search-wrap">
+        <input type="text" id="search-input" class="search-input" placeholder="Search stocks..." autocomplete="off" />
+        <div class="search-results" id="search-results"></div>
+      </div>
+
+      <!-- Alert Bell -->
+      <button class="icon-btn" id="alert-bell" onclick="navigateTo('alerts')" title="Alerts">
+        🔔 <span class="alert-badge" id="alert-badge" style="display:none">0</span>
+      </button>
+
+      <!-- Theme Toggle -->
+      <button class="icon-btn" id="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+        🌙
+      </button>
+
+      <!-- Live Indicator -->
+      <div class="live-indicator">
+        <span class="live-dot"></span>
+        <span class="live-text" id="update-time">Loading...</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══ NAVIGATION TABS ═══ -->
+  <nav class="main-nav" id="main-nav">
+    <button class="nav-btn active" data-panel="market" onclick="navigateTo('market')">
+      <span class="nav-icon">📈</span> Market
+    </button>
+    <button class="nav-btn" data-panel="watchlist" onclick="navigateTo('watchlist')">
+      <span class="nav-icon">⭐</span> Watchlist
+    </button>
+    <button class="nav-btn" data-panel="portfolio" onclick="navigateTo('portfolio')">
+      <span class="nav-icon">💼</span> Portfolio
+    </button>
+    <button class="nav-btn" data-panel="dividends" onclick="navigateTo('dividends')">
+      <span class="nav-icon">💰</span> Dividends
+    </button>
+    <button class="nav-btn" data-panel="announcements" onclick="navigateTo('announcements')">
+      <span class="nav-icon">📢</span> Announcements
+    </button>
+    <button class="nav-btn" data-panel="alerts" onclick="navigateTo('alerts')">
+      <span class="nav-icon">🔔</span> Alerts
+    </button>
+    <button class="nav-btn" data-panel="signals" onclick="navigateTo('signals')">
+      <span class="nav-icon">🎯</span> Signal History
+    </button>
+    <button class="nav-btn chat-nav-btn" data-panel="chat" onclick="navigateTo('chat')">
+      <span class="nav-icon">🤖</span> AI Assistant
+    </button>
+  </nav>
+
+  <!-- ═══ PANEL: MARKET ═══ -->
+  <div id="panel-market" class="panel active">
+    <!-- AI Market Overview Banner -->
+    <div class="market-banner" id="market-banner">
+      <div class="banner-left">
+        <div class="banner-title">AI Market Overview</div>
+        <p class="banner-summary" id="banner-summary">Analyzing market conditions...</p>
+        <div class="banner-tags" id="banner-tags"></div>
+      </div>
+      <div class="banner-right">
+        <div class="banner-score-wrap">
+          <span class="banner-score-label">SENTIMENT</span>
+          <span class="banner-score" id="banner-score">—</span>
+        </div>
+        <div class="banner-sectors">
+          <div><span class="banner-sec-label">🔥 Hot</span><div id="banner-hot"></div></div>
+          <div><span class="banner-sec-label">❄️ Weak</span><div id="banner-weak"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Market Advice -->
+    <div class="market-advice-bar" id="market-advice-bar"></div>
+
+    <!-- Sector Heatmap -->
+    <div class="sector-strip" id="sector-strip"></div>
+
+    <!-- Main Market Grid -->
+    <div class="market-grid">
+      <!-- Stock Table -->
+      <div class="stock-panel">
+        <div class="stock-panel-header">
+          <h2>All Stocks</h2>
+          <div class="filter-chips">
+            <button class="chip active" data-filter="all">All Stocks</button>
+            <button class="chip" data-filter="kse100">KSE-100</button>
+            <button class="chip" data-filter="kmi30">KMI-30</button>
+            <button class="chip" data-filter="shariah">Halal ✓</button>
+            <button class="chip" data-filter="gainers">🟢 Gainers</button>
+            <button class="chip" data-filter="losers">🔴 Losers</button>
+          </div>
+        </div>
+        <div class="stock-table-wrap" id="stock-table-wrap">
+          <table class="stock-table" id="stock-table">
+            <thead>
+              <tr>
+                <th>STOCK</th>
+                <th>PRICE</th>
+                <th>CHANGE</th>
+                <th>VOLUME</th>
+                <th>SIGNAL</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="stock-tbody">
+              <tr><td colspan="6" class="empty-state">Fetching live prices...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- News Feed -->
+      <div class="news-panel">
+        <div class="news-panel-header">
+          <h2>Live News</h2>
+          <div class="filter-chips news-chips">
+            <button class="chip active" data-news="all">All</button>
+            <button class="chip" data-news="positive">📈 Bullish</button>
+            <button class="chip" data-news="negative">📉 Bearish</button>
+          </div>
+        </div>
+        <div class="news-feed" id="news-feed">
+          <div class="empty-state">Fetching news...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PANEL: STOCK DETAIL ═══ -->
+  <div id="panel-stock-detail" class="panel">
+    <div class="detail-header">
+      <button class="back-btn" onclick="navigateTo('market')">← Back to Market</button>
+      <button class="watchlist-toggle" id="watchlist-toggle" onclick="toggleWatchlistStock()">
+        ☆ Add to Watchlist
+      </button>
+    </div>
+    <div class="detail-content" id="detail-content">
+      <div class="empty-state" style="padding:80px 0">Select a stock to view details</div>
+    </div>
+  </div>
+
+  <!-- ═══ PANEL: WATCHLIST ═══ -->
+  <div id="panel-watchlist" class="panel">
+    <div class="panel-page-header">
+      <h1>⭐ My Watchlist</h1>
+      <p class="subtitle">Your pinned stocks for quick monitoring</p>
+    </div>
+    <div class="watchlist-grid" id="watchlist-grid">
+      <div class="empty-state">No stocks in your watchlist yet. Click ☆ on any stock to add it.</div>
+    </div>
+  </div>
+
+  <!-- ═══ PANEL: PORTFOLIO ═══ -->
+  <div id="panel-portfolio" class="panel">
+    <div class="panel-page-header">
+      <h1>💼 My Portfolio</h1>
+      <div class="header-actions">
+        <button class="btn-primary" onclick="fetchPortfolioAdvice()">🤖 AI Advice</button>
+        <button class="btn-outline" onclick="exportPortfolioPDF()">📄 Export PDF</button>
+      </div>
+    </div>
+    <!-- Portfolio Summary Cards -->
+    <div class="port-summary-cards" id="port-summary-cards">
+      <div class="summary-card"><div class="sc-label">INVESTED</div><div class="sc-value" id="port-invested">—</div></div>
+      <div class="summary-card"><div class="sc-label">CURRENT VALUE</div><div class="sc-value" id="port-current">—</div></div>
+      <div class="summary-card"><div class="sc-label">TOTAL P&L</div><div class="sc-value" id="port-pnl">—</div></div>
+      <div class="summary-card"><div class="sc-label">RETURN</div><div class="sc-value" id="port-return">—</div></div>
+      <div class="summary-card"><div class="sc-label">HOLDINGS</div><div class="sc-value" id="port-count">—</div></div>
+    </div>
+    <div class="port-body">
+      <div class="port-main">
+        <h3>Holdings</h3>
+        <div id="port-holdings" class="port-holdings">
+          <div class="empty-state">No holdings yet. Add your first stock below.</div>
+        </div>
+        <!-- Add Holding Form -->
+        <div class="add-form">
+          <h4>➕ Add / Update Holding</h4>
+          <div class="form-grid">
+            <input type="text" id="f-symbol" placeholder="Symbol (e.g. OGDC)" class="form-input" maxlength="8" />
+            <input type="number" id="f-shares" placeholder="Shares" class="form-input" min="1" />
+            <input type="number" id="f-buyprice" placeholder="Buy Price (PKR)" class="form-input" step="0.01" />
+            <input type="date" id="f-buydate" class="form-input" />
+            <button class="btn-primary" onclick="submitHolding()">Add</button>
+          </div>
+          <div class="form-error" id="form-error"></div>
+        </div>
+      </div>
+      <div class="port-advice-side">
+        <h3>AI Portfolio Advice</h3>
+        <div id="port-advice-panel" class="advice-panel">
+          <div class="empty-state">Click "AI Advice" to analyze your portfolio</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PANEL: DIVIDENDS ═══ -->
+  <div id="panel-dividends" class="panel">
+    <div class="panel-page-header">
+      <h1>💰 Dividend Announcements</h1>
+      <p class="subtitle">Sources: sarmaaya.pk · scstrade.com · Google News — refreshed every 5 min</p>
+    </div>
+    <div class="div-filter-row">
+      <button class="chip active" data-divfilter="all">All</button>
+      <button class="chip" data-divfilter="dividend">💰 Dividends</button>
+      <button class="chip" data-divfilter="bonus">🎁 Bonus</button>
+      <button class="chip" data-divfilter="rights">📋 Rights</button>
+      <button class="chip" data-divfilter="results">📊 Results</button>
+    </div>
+    <div class="div-grid" id="div-grid">
+      <div class="empty-state">Loading dividend data...</div>
+    </div>
+  </div>
+
+  <!-- ═══ PANEL: ANNOUNCEMENTS ═══ -->
+  <div id="panel-announcements" class="panel">
+    <div class="panel-page-header">
+      <h1>📢 Corporate Announcements</h1>
+      <p class="subtitle">Board meetings, AGMs, financial results, corporate actions from PSX</p>
+    </div>
+    <div class="ann-filter-row">
+      <button class="chip active" data-annfilter="all">All</button>
+      <button class="chip" data-annfilter="board">📌 Board Meetings</button>
+      <button class="chip" data-annfilter="results">📊 Financial Results</button>
+      <button class="chip" data-annfilter="bonus">🎁 Bonus Shares</button>
+    </div>
+    <div class="ann-grid" id="ann-grid">
+      <div class="empty-state">Loading announcements...</div>
+    </div>
+  </div>
+
+  <!-- ═══ PANEL: ALERTS ═══ -->
+  <div id="panel-alerts" class="panel">
+    <div class="panel-page-header">
+      <h1>🔔 Price & Signal Alerts</h1>
+      <p class="subtitle">Get browser notifications when your conditions are met</p>
+      <button class="btn-primary" id="enable-notif-btn" onclick="enableNotifications()">🔔 Enable Browser Notifications</button>
+    </div>
+    <!-- Create Alert -->
+    <div class="alert-create-card">
+      <h3>Create New Alert</h3>
+      <div class="alert-form">
+        <input type="text" id="a-symbol" placeholder="Stock Symbol" class="form-input" maxlength="8" />
+        <select id="a-type" class="form-input" onchange="updateAlertConditions()">
+          <option value="price_above">Price Goes Above</option>
+          <option value="price_below">Price Goes Below</option>
+          <option value="signal_change">Signal Change</option>
+          <option value="volume_surge">Volume Surge</option>
+          <option value="percent_move">% Move</option>
+          <option value="news_alert">News Alert</option>
+        </select>
+        <select id="a-condition" class="form-input">
+          <option value="above">Above</option>
+          <option value="below">Below</option>
+        </select>
+        <input type="number" id="a-target" placeholder="Target Value" class="form-input" step="0.01" />
+        <input type="text" id="a-note" placeholder="Note (optional)" class="form-input" />
+        <button class="btn-primary" onclick="createAlert()">Create Alert</button>
+      </div>
+    </div>
+    <!-- Active Alerts -->
+    <div class="alerts-section">
+      <h3>Active Alerts</h3>
+      <div id="active-alerts" class="alerts-list">
+        <div class="empty-state">No active alerts</div>
+      </div>
+    </div>
+    <!-- Triggered History -->
+    <div class="alerts-section">
+      <h3>Triggered History</h3>
+      <button class="btn-outline btn-sm" onclick="clearTriggered()">Clear History</button>
+      <div id="triggered-alerts" class="alerts-list">
+        <div class="empty-state">No triggered alerts yet</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PANEL: SIGNAL HISTORY ═══ -->
+  <div id="panel-signals" class="panel">
+    <div class="panel-page-header">
+      <h1>🎯 AI Signal Accuracy Tracker</h1>
+      <p class="subtitle">Did AI's past signals actually work? Track historical performance</p>
+    </div>
+    <!-- Accuracy Stats -->
+    <div class="accuracy-cards" id="accuracy-cards">
+      <div class="empty-state">Loading signal history...</div>
+    </div>
+    <!-- Signal History Table -->
+    <div class="signal-history-wrap">
+      <h3>Recent Signals</h3>
+      <div id="signal-history-list" class="signal-history-list">
+        <div class="empty-state">No signals recorded yet</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PANEL: CHAT ASSISTANT ═══ -->
+  <div id="panel-chat" class="panel">
+    <div class="chat-container">
+      <div class="chat-header">
+        <div class="chat-title">
+          <span class="nav-icon">🤖</span> PSX Pro Analyst
+        </div>
+        <div class="chat-status">Powered by Gemini AI</div>
+        <button class="btn-outline btn-sm" onclick="clearChat()">Clear Chat</button>
+      </div>
+      <div id="chat-messages" class="chat-messages">
+        <div class="chat-msg system-msg">
+          <div class="msg-bubble">
+            👋 Hello! I'm PSX Pro. I have full access to live market data, news, announcements, your portfolio, and latest stock signals. Ask me anything about the PSX!
+          </div>
+        </div>
+      </div>
+      <div class="chat-input-area">
+        <input type="text" id="chat-input" placeholder="Type your message... (e.g. 'What is your view on LUCK?' or 'Review my portfolio')" autocomplete="off" onkeypress="if(event.key === 'Enter') sendChatMessage()" />
+        <button id="send-chat-btn" class="btn-primary" onclick="sendChatMessage()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
