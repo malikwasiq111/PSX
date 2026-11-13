@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.env
+.venv/
+# personal data
+BACKEND/portfolio.json
+BACKEND/alerts.json
+BACKEND/watchlist.json
+BACKEND/portfolio_history.json
