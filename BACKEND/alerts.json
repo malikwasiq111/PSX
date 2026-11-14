@@ -1,0 +1,107 @@
+{
+  "alerts": [
+    {
+      "id": 1776535211999,
+      "symbol": "OGDC",
+      "type": "price_above",
+      "condition": "above",
+      "target_value": 100.0,
+      "note": "",
+      "active": true,
+      "triggered": true,
+      "created_at": "2026-04-18T23:00:11.999532",
+      "triggered_at": "2026-04-19T18:42:01.125846"
+    },
+    {
+      "id": 2,
+      "symbol": "OGDC",
+      "type": "price_above",
+      "condition": "above",
+      "target_value": 100.0,
+      "note": "",
+      "active": true,
+      "triggered": true,
+      "created_at": "2026-04-19T18:42:43.991989",
+      "triggered_at": "2026-04-19T18:43:10.828817"
+    },
+    {
+      "id": 3,
+      "symbol": "OGDC",
+      "type": "price_above",
+      "condition": "above",
+      "target_value": 0.0,
+      "note": "",
+      "active": true,
+      "triggered": true,
+      "created_at": "2026-04-20T11:56:55.574440",
+      "triggered_at": "2026-04-20T11:57:47.286075"
+    },
+    {
+      "id": 4,
+      "symbol": "MEBL",
+      "type": "price_above",
+      "condition": "above",
+      "target_value": 300.0,
+      "note": "",
+      "active": true,
+      "triggered": true,
+      "created_at": "2026-04-20T17:58:58.398079",
+      "triggered_at": "2026-04-20T17:59:01.389907"
+    },
+    {
+      "id": 5,
+      "symbol": "OGDC",
+      "type": "price_above",
+      "condition": "above",
+      "target_value": 0.0,
+      "note": "",
+      "active": true,
+      "triggered": true,
+      "created_at": "2026-04-20T18:12:21.040329",
+      "triggered_at": "2026-04-20T18:13:27.960401"
+    },
+    {
+      "id": 6,
+      "symbol": "OGDC",
+      "type": "price_above",
+      "condition": "above",
+      "target_value": 100.0,
+      "note": "",
+      "active": true,
+      "triggered": true,
+      "created_at": "2026-04-20T22:50:03.798457",
+      "triggered_at": "2026-04-20T22:50:15.239101"
+    },
+    {
+      "id": 7,
+      "symbol": "OGDC",
+      "type": "price_above",
+      "condition": "above",
+      "target_value": 0.0,
+      "note": "",
+      "active": true,
+      "triggered": true,
+      "created_at": "2026-04-27T21:59:38.108952",
+      "triggered_at": "2026-04-27T21:59:56.817096"
+    }
+  ],
+  "triggered": [
+    {
+      "id": 6,
+      "symbol": "OGDC",
+      "type": "price_above",
+      "message": "\ud83c\udfaf OGDC hit \u20a8326.65 \u2014 above your target of \u20a8100.00",
+      "price_at_trigger": 326.65,
+      "triggered_at": "2026-04-20T22:50:15.239101"
+    },
+    {
+      "id": 7,
+      "symbol": "OGDC",
+      "type": "price_above",
+      "message": "\ud83c\udfaf OGDC hit \u20a8319.11 \u2014 above your target of \u20a80.00",
+      "price_at_trigger": 319.11,
+      "triggered_at": "2026-04-27T21:59:56.817096"
+    }
+  ],
+  "unread_count": 0
+}
