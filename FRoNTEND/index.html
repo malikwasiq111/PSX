@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PSX Pro — Pakistan Stock Exchange Terminal</title>
+<meta name="description" content="Live PSX prices, heatmap, screener, signals, portfolio and corporate actions.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+<aside class="side" id="side">
+  <a class="brand" href="#/"><span class="mark">P</span><b>PSX<i>Pro</i></b></a>
+  <nav id="nav"><span class="pill" id="pill"></span></nav>
+  <div class="side-foot"><div class="status"><span class="dot" id="dot"></span><span id="status">Connecting…</span></div></div>
+</aside>
+<div class="main">
+  <header class="top">
+    <button class="search" id="open-cmd"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><span>Search stocks or jump to…</span><kbd>Ctrl K</kbd></button>
+    <div class="top-r"><button class="ico" id="theme" title="Toggle theme">◐</button><a class="ico" href="#/alerts" title="Alerts">🔔<span class="badge" id="badge" hidden>0</span></a></div>
+  </header>
+  <div class="tape"><div class="tape-in" id="tape"></div></div>
+  <main id="view" class="view"></main>
+  <footer class="foot">PSX Pro · Data from PSX and Sarmaaya · Indicators are computed locally and are for information only, not financial advice.</footer>
+</div>
+<div class="cmd" id="cmd" hidden><div class="cmd-box"><input id="cmd-in" placeholder="Type a symbol, company or page…" autocomplete="off"><div id="cmd-list"></div></div></div>
+<div class="toasts" id="toasts"></div>
+<script src="app.js"></script>
+</body></html>
